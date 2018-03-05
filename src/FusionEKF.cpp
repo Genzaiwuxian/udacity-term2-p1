@@ -36,7 +36,7 @@ FusionEKF::FusionEKF() {
     * Finish initializing the FusionEKF.
     * Set the process and measurement noises
   */
-  Hj_laser << 1, 0, 0, 0,
+  H_laser_ << 1, 0, 0, 0,
 	  0, 1, 0, 0;
 
 
@@ -71,8 +71,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       */
 		ekf_.x_(0) = measurement_pack.raw_measurements_(0)*cos(measurement_pack.raw_measurements_(1));
 		ekf_.x_(1)= measurement_pack.raw_measurements_(0)*sin(measurement_pack.raw_measurements_(1));
-		ekf_.x(2) = measurement_pack.raw_measurements_(2)*cos(measurement_pack.raw_measurements_(1));
-		ekf_.x(3) = measurement_pack.raw_measurements_(2)*sin(measurement_pack.raw_measurements_(1));
+		ekf_.x_(2) = measurement_pack.raw_measurements_(2)*cos(measurement_pack.raw_measurements_(1));
+		ekf_.x_(3) = measurement_pack.raw_measurements_(2)*sin(measurement_pack.raw_measurements_(1));
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
       /**
@@ -80,8 +80,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       */
 		ekf_.x_(0) = measurement_pack.raw_measurements_(0);
 		ekf_.x_(1) = measurement_pack.raw_measurements_(1);
-		ekf_.x(2) = 0.0;
-		ekf_.x(3) = 0.0;
+		ekf_.x_(2) = 0.0;
+		ekf_.x_(3) = 0.0;
     }
 	ekf_.P_ << 1, 0, 0, 0,
 		0, 1, 0, 0,
@@ -114,9 +114,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 	  1, 0, 0, 0;
   float noise_ax = 9.0;
   float noise_ay = 9.0;
-  dt_2 = dt * dt;
-  dt_3 = dt_2 * dt;
-  dt_4 = dt_3 * dt;
+  float dt_2 = dt * dt;
+  float dt_3 = dt_2 * dt;
+  float dt_4 = dt_3 * dt;
   ekf_.Q_ << dt_4 * noise_ax / 4, 0, dt_3*noise_ax / 2, 0,
 	  0, dt_4*noise_ay / 4, 0, dt_3*noise_ay / 2,
 	  dt_3*noise_ax / 2, 0, dt_2*noise_ax, 0,
@@ -135,14 +135,14 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
     // Radar updates
-	  ekf_.H_ = Tools::CalculateJacobian(ekf_.x_);
+	  ekf_.H_ = tools.CalculateJacobian(ekf_.x_);
 	  ekf_.R_ = R_laser_;
-	  KalmanFilter::UpdateEKF(measurement_pack.raw_measurements_);
+	  ekf_.UpdateEKF(measurement_pack.raw_measurements_);
   } else {
     // Laser updates
 	  ekf_.H_ = Hj_;
 	  ekf_.R_ = R_radar_;
-	  KalmanFilter::Update(measurement_pack.raw_measurements_);
+	  ekf_.Update(measurement_pack.raw_measurements_);
   }
 
   // print the output
