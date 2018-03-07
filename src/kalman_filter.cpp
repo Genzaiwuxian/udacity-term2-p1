@@ -26,7 +26,7 @@ void KalmanFilter::Predict() {
     * predict the state
   */
 	x_ = F_ * x_;
-	P_ = F_ * P_*(F_.transpose());
+	P_ = F_ * P_*(F_.transpose())+Q_;
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
@@ -50,22 +50,15 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   TODO:
     * update the state by using Extended Kalman Filter equations
   */
-	if (fabs(x_(0))<1.0e-8 && fabs(x_(1)<1.0e-8))
-	{
-		x_(0) = 1.0e-8;
-		x_(0) = 1.0e-8;
-	}
 	float rho = sqrt(x_(0)*x_(0) + x_(1)*x_(1));
-	float theta = atan(x_(1) / x_(0));
-	if (theta > M_PI)
-	{
-		theta -= 2 * M_PI;
+	float theta = atan2(x_(1),x_(0));
+	float rho_dot;
+	if (fabs(rho) < 0.0001) {
+		rho_dot = 0.0;
 	}
-	else if (theta + M_PI < 0)
-	{
-		theta += 2 * M_PI;
+	else {
+		rho_dot = (x_(0)*x_(2) + x_(1)*x_(3)) / rho;
 	}
-	float rho_dot = (x_(0)*x_(2) + x_(1)*x_(3)) / rho;
 	VectorXd h(3);
 	h << rho, theta, rho_dot;
 	VectorXd y = z - h;
