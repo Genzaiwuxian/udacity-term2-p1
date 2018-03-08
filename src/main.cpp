@@ -26,10 +26,8 @@ std::string hasData(std::string s) {
   return "";
 }
 
-int main(int argc, char* argv[])
+int main()
 {
-
-
   uWS::Hub h;
 
   // Create a Kalman Filter instance
@@ -47,8 +45,6 @@ int main(int argc, char* argv[])
 
     if (length && length > 2 && data[0] == '4' && data[1] == '2')
     {
-
-
 
       auto s = hasData(std::string(data));
       if (s != "") {
@@ -125,7 +121,7 @@ int main(int argc, char* argv[])
     	  estimate(1) = p_y;
     	  estimate(2) = v1;
     	  estimate(3) = v2;
-
+    	  
     	  estimations.push_back(estimate);
 
     	  VectorXd RMSE = tools.CalculateRMSE(estimations, ground_truth);
@@ -138,12 +134,7 @@ int main(int argc, char* argv[])
           msgJson["rmse_vx"] = RMSE(2);
           msgJson["rmse_vy"] = RMSE(3);
           auto msg = "42[\"estimate_marker\"," + msgJson.dump() + "]";
-          cout << "**************************************************" << endl;
-          cout << "rmse_x: " << RMSE(0) << endl;
-          cout << "rmse_y: " << RMSE(1) << endl;
-          cout << "rmse_vx: " << RMSE(2) << endl;
-          cout << "rmse_vy: " << RMSE(3) << endl;
-          cout << "**************************************************" << endl;
+          // std::cout << msg << std::endl;
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
 	  
         }
@@ -153,6 +144,7 @@ int main(int argc, char* argv[])
         ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
       }
     }
+
   });
 
   // We don't need this since we're not using HTTP but if it's removed the program
@@ -191,91 +183,3 @@ int main(int argc, char* argv[])
   }
   h.run();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

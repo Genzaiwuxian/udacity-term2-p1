@@ -14,32 +14,15 @@ public:
   // state transition matrix
   Eigen::MatrixXd F_;
 
-  // transpose of state transition matrix
-  //Eigen::MatrixXd Ft;
-
   // process covariance matrix
   Eigen::MatrixXd Q_;
 
   // measurement matrix
   Eigen::MatrixXd H_;
 
-  // transpose of measurement matrix
-  //Eigen::MatrixXd Ht;
-
   // measurement covariance matrix
   Eigen::MatrixXd R_;
 
-  /*
-  Eigen::VectorXd z_pred;
-
-  Eigen::VectorXd y;
-
-  Eigen::MatrixXd PHt;
-  Eigen::MatrixXd S;
-  Eigen::MatrixXd Si;
-  Eigen::MatrixXd K;
-
-*/
   /**
    * Constructor
    */
@@ -80,10 +63,6 @@ public:
    * @param z The measurement at k+1
    */
   void UpdateEKF(const Eigen::VectorXd &z);
-
-  /// \ brief Common calculation between EKF and KF updates
-  /// \ param VectorXd
-  void KFHelper(const Eigen::VectorXd &y);
 
 };
 
