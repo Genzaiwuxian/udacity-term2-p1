@@ -71,14 +71,14 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 		rho = 0.000001;
 	}
 	rho_dot = (px*vx + py * vy) / rho;
-	VectorXd h(3);
+	VectorXd h=VectorXd(3);
 	h << rho, theta, rho_dot;
 	VectorXd y = z - h;
-	if (y[1] > M_PI) {
-		y[1] -= 2 * M_PI;
+	if (y(1) > M_PI) {
+		y(1) -= 2 * M_PI;
 	}
-	else if (y[1] < -M_PI) {
-		y[1] += 2*M_PI;
+	else if (y(1) < -M_PI) {
+		y(1) += 2*M_PI;
 	}
 	MatrixXd Ht = H_.transpose();
 	MatrixXd S = H_ * P_ * Ht + R_;
