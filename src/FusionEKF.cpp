@@ -139,8 +139,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
      * Use the sensor type to perform the update step.
      * Update the state and covariance matrices.
    */
-  bool radar_switch = false;
-  bool lindar_switch = true;
+  bool radar_switch = true;
+  bool lindar_switch = false;
 
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR && radar_switch) {
     // Radar updates
